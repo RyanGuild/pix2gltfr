@@ -1,0 +1,2 @@
+pkg/*
+!pkg/pix2gltfr.d.ts

@@ -1,0 +1,1 @@
+export * from "./pkg/pix2gltfr";

@@ -1,0 +1,20 @@
+[package]
+name = "pix2gltfr"
+version = "0.1.0"
+edition = "2018"
+descriptions = "Convert png to gltf voxel art"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.74"
+js-sys = "0.3.55"
+web-sys = {version = "0.3.55", features = ["ImageData", "console"]}
+gltf = {version = "0.16.0"}
+gltf-json = "0.16.0"
+log = "0.4.6"
+wasm-logger = "0.2.0"

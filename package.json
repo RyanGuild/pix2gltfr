@@ -1,0 +1,24 @@
+{
+  "name": "pix2gltfr",
+  "version": "1.0.0",
+  "source": "src/index.html",
+  "author": "Ryan Guild <rdg27@pitt.edu>",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel build ./src/index.html",
+    "start": "parcel ./src/index.html"
+  },
+  "devDependencies": {
+    "@parcel/transformer-toml": "^2.1.1",
+    "parcel": "^2.1.1",
+    "parcel-bundler": "^1.12.5",
+    "parcel-plugin-wasm.rs": "^1.3.0",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.178",
+    "@types/lodash-es": "^4.17.5",
+    "lodash-es": "^4.17.21"
+  }
+}
