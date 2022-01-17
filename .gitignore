@@ -2,4 +2,5 @@ target
 node_modules
 .history
 .parcel-cache
+.cache
 dist
