@@ -3,13 +3,9 @@ use gltf::*;
 use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
 use web_sys::{ImageData, console};
-use wasm_logger::{init, Config};
 
-#[wasm_bindgen(start)]
-pub fn startup() {
-    init(Config::default());
-    log::info!("startup");
-}
+const template_gltf: &[u8] = include_bytes!("template.gltf");
+
 
 type ColorT = [u8; 4];
 const VOXEL_DIMENSION: f32 = 1.0;
@@ -17,6 +13,9 @@ const VOXEL_DIMENSION: f32 = 1.0;
 #[wasm_bindgen]
 pub fn image_to_gltf(image: ImageData) -> String {
   console::log_1(&"image_to_gltf starting".into());
+
+  let (template_document, template_buffers, template_images) = gltf::import_slice(template_gltf).unwrap();
+  let template_document_json = template_document.into_json();
   let x_offset: f32 = -(image.width() as f32) * VOXEL_DIMENSION * 0.5;
   let y_offset: f32 = (image.height() as f32) * VOXEL_DIMENSION - VOXEL_DIMENSION * 0.5;
   let z_offset: f32 = 0.0;
@@ -31,12 +30,10 @@ pub fn image_to_gltf(image: ImageData) -> String {
 
   for y in 0..image.height() {
     for x in 0..image.width() {
-      let data_index = (image.height() * 4 * y + 4 * x) as usize;
-      //console::log_3(&x.into(), &y.into(), &data_index.into());
-      if let [r, g, b, a] = image_bytes[data_index..(data_index + 3)] {
-        console::log_1(&"image_to_gltf got color".into());
+      let data_index = ((image.width() * 4 * y) + (4 * x)) as usize;
+      if let [r, g, b, a] = image_bytes[data_index..(data_index + 4)] {
         if a != 0 {
-          console::log_3(&x.into(), &y.into(), &a.into());
+          console::log_4(&image_bytes[data_index].into(),&image_bytes[data_index+1].into(),&image_bytes[data_index+2].into(),&image_bytes[data_index+3].into());
           let mat_ind: usize = match material_indicies.get(&[r, g, b, a]) {
             Some(ind) => *ind,
             None => {
@@ -69,11 +66,15 @@ pub fn image_to_gltf(image: ImageData) -> String {
                 extensions: Default::default(),
                 primitives: vec![json::mesh::Primitive {
                   attributes: {
-                    let mut map = HashMap::new();
+                    let mut map = HashMap::<json::validation::Checked<json::mesh::Semantic>, json::Index<json::Accessor>>::new();
+                    
                     map.insert(
-                      Valid(Semantic::Positions),
-                      json::Index::<json::Accessor>::new(0),
+                      json::validation::Checked::Valid(
+                        json::mesh::Semantic::Positions
+                      ), 
+                      json::Index::new(0)
                     );
+                    
                     map
                   },
                   indices: None,
@@ -114,22 +115,15 @@ pub fn image_to_gltf(image: ImageData) -> String {
   };
 
   let result = json::Root {
-    accessors: vec![],
-    animations: vec![],
-    asset: json::Asset {
-      extensions: Default::default(),
-      extras: Default::default(),
-      generator: None,
-      version: "2.0".to_string(),
-      copyright: None,
-      min_version: None,
-    },
-    buffers: vec![],
-    buffer_views: vec![],
-    cameras: vec![],
-    extensions: Default::default(),
-    extras: Default::default(),
-    images: vec![],
+    accessors: template_document_json.accessors.clone(),
+    animations: template_document_json.animations.clone(),
+    asset: template_document_json.asset.clone(),
+    buffers: template_document_json.buffers.clone(),
+    buffer_views: template_document_json.buffer_views.clone(),
+    cameras: template_document_json.cameras.clone(),
+    extensions: template_document_json.extensions.clone(),
+    extras: template_document_json.extras.clone(),
+    images: template_document_json.images.clone(),
     materials: materials,
     meshes: meshes,
     nodes: nodes.clone(),
