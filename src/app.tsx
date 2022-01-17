@@ -14,13 +14,16 @@ export const ImageProcessor: React.FC<{ dataurl: string }> = ({ dataurl }) => {
   const inCanvasRef = useRef<HTMLCanvasElement>();
 
   const [gltf_src, setGltfSrc] = useState<ReturnType<typeof image_to_gltf>>();
+  const [gltf_url, setGltfUrl] = useState<string>();
   const [gltf, setGltf] = useState<GLTF>();
   const gltfLoader = React.useMemo(() => new GLTFLoader(), []);
 
   useEffect(() => {
     if (gltf_src) {
       gltfLoader.parse(gltf_src, "default", gltf => setGltf(gltf));
+      setGltfUrl(URL.createObjectURL(new Blob([gltf_src], { type: "application/octet-stream" })));
     }
+    return () => URL.revokeObjectURL(gltf_url);
   }, [gltf_src]);
 
 
@@ -32,6 +35,8 @@ export const ImageProcessor: React.FC<{ dataurl: string }> = ({ dataurl }) => {
 
   return (
     <div>
+      <h1>Image Pipeline</h1>
+      <h2>src img</h2>
       <img onLoad={() => {
         const img = imgRef.current;
         const inCanvas = inCanvasRef.current;
@@ -44,11 +49,13 @@ export const ImageProcessor: React.FC<{ dataurl: string }> = ({ dataurl }) => {
         console.log(JSON.parse(gltf))
         setGltfSrc(gltf);
       }} ref={imgRef} src={dataurl} />
+      <h2>src canvas</h2>
       <canvas ref={inCanvasRef} />
+      <h2>three.js render</h2>
       <Canvas 
-        style={ { width: "100%", height: "1000px", backgroundColor: "gray" } }
+        style={ { width: "100%", height: "400px", backgroundColor: "gray" } }
       camera={{
-        position: [0, 0, 10],
+        position: [0, 300, 300],
       }}>
           <ambientLight />
           <pointLight position={[10, 10, 10]} />
@@ -57,6 +64,7 @@ export const ImageProcessor: React.FC<{ dataurl: string }> = ({ dataurl }) => {
           </mesh>
           {gltf && <RenderGLTF gltf={gltf} />}
       </Canvas>
+      {gltf_url && <a href={gltf_url} download="pic.gltf">Download</a>}
     </div>
   )
 }

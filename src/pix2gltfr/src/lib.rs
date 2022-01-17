@@ -77,7 +77,7 @@ pub fn image_to_gltf(image: ImageData) -> String {
                     
                     map
                   },
-                  indices: None,
+                  indices: Some(json::Index::new(1)),
                   material: Some(json::Index::<json::Material>::new(mat_ind as u32)),
                   mode: Valid(json::mesh::Mode::Triangles),
                   targets: None,
