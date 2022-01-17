@@ -52,4 +52,4 @@ var n,e="/Users/ryanguild/pix2gltfr/node_modules/parcel-plugin-wasm.rs";const t=
 },{"fs":"rDCW"}],0:[function(require,module,exports) {
 var b=require("TUK3");b.register("wasm",require("fISM"));b.load([["pix2gltfr_bg.ef1be746.wasm","L6mV"]]).then(function(){require("Focm");});
 },{}]},{},[0], null)
-//# sourceMappingURL=/src.4ce32a52.js.map
+//# sourceMappingURL=https://ryanguild.github.io/pix2gltfr/src.4ce32a52.js.map
